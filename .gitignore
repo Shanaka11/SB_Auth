@@ -1,0 +1,9 @@
+# Logs and databases #
+######################
+*.sqlite3
+
+# Node Modules
+node_modules/
+
+# Django Files
+migrations/*
