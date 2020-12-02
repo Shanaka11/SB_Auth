@@ -1,7 +1,8 @@
 import React, { useEffect, useContext } from "react";
 import { render } from "react-dom";
 import './index.css';
-import {Login, Admin} from './authentication';
+import {Login} from './authentication';
+import {Admin} from './admin'
 import {AuthenticationProvider, AuthenticationContext} from "./context"
 import {BrowserRouter as Router, Switch, Route, useHistory} from 'react-router-dom'
 
