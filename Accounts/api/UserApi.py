@@ -236,7 +236,11 @@ class UserApi(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def logout(self, request):
         logout(request)
-        return Response(data={"message": "User Logged Out"}, status=200)
+        response = Response()
+        response.delete_cookie('mahircorrigan')
+        response.data = {"message": "User Logged Out"}
+        response.status_code = 200
+        return response
 
     # Change Password
     """

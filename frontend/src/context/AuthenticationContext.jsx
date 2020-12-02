@@ -52,14 +52,13 @@ export const AuthenticationProvider = ({children}) => {
                 alert(JSON.stringify(response))
             }
         }        
-        apiLogout()
+        apiLogout(handleFrontend)
     }
 
     const currentUser = () => {
 
         const handleFrontend = (response, status) => {
             if(status === 200){
-                console.log(response)
                 if (response !== null) {
                     dispatch({
                         type: 'USER',
@@ -95,7 +94,7 @@ export const AuthenticationProvider = ({children}) => {
                     // salesperson_id: state.salesperson_id,
                     // email: state.email,
                     logIn,
-                    // logOut,
+                    logOut,
                     currentUser
                     // register,
                     // registerAdmin,
