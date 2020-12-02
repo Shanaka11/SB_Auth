@@ -13,6 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
 # Local
 from ..models import User
 from ..serializers.UserSerializer import UserSerializer, PublicUserSerializer
@@ -26,13 +27,21 @@ class UserApi(viewsets.ModelViewSet):
     queryset = User.objects.all()
     # Serializer Selector
     def get_serializer_class(self):
-            if self.action == 'list':
-                return PublicUserSerializer
-            if self.action == 'create':
-                return PublicUserSerializer
-            if self.action == 'retrieve':
-                return PublicUserSerializer
-            return UserSerializer
+        if self.action == 'list':
+            return PublicUserSerializer
+        if self.action == 'create':
+            return PublicUserSerializer
+        if self.action == 'retrieve':
+            return PublicUserSerializer
+        return UserSerializer
+    
+    def get_permissions(self):
+        print(self.action)
+        if self.action == 'login':
+            return [AllowAny()]
+        else:
+            return [IsAuthenticated()]
+
     # Apart from Create (user not admin), Login, Forget Password can be accessed without authentication
     # All else needs to be authenticated
 
@@ -189,7 +198,7 @@ class UserApi(viewsets.ModelViewSet):
         # Only admins can view all users
         user = request.user
         if user.is_superuser:
-            return super().list(request, pk)
+            return super().list(request)
         else:
             return Response(data={"message": "Does not have permission"}, status=401)
 
@@ -197,17 +206,16 @@ class UserApi(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_current_user(self, request):
         serializer = PublicUserSerializer(request.user)
-        return Response(data= serializer.data, status=200)
+        return Response(data= {"user": serializer.data}, status=200)
     
     # Login
     """
     username
     password
     """  
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'])    
     def login(self, request):
         serializer_class = PublicUserSerializer
-        # return Response(data={"message": "Login"}, status=200)
 
         username = request.data['username']
         password = request.data['password']
@@ -215,11 +223,16 @@ class UserApi(viewsets.ModelViewSet):
 
         if user is not None:
             login(request, user)
-            return Response(data={"message": "User Logged In Successfully", "user": PublicUserSerializer(user).data}, status=200)
+            # Attach a normal cookie notifing a user is logged in
+            response = Response()
+            response.set_cookie(key='mahircorrigan', value='gethinmorrow', httponly=False)
+            response.data = {"message": "User Logged In Successfully", "user": PublicUserSerializer(user).data}
+            response.status_code = 200
+            return response
         else:
             return Response(data={"message": "Invalid Username or Password"}, status=400)
 
-    # Logout    
+    # Logout        
     @action(detail=False, methods=['get'])
     def logout(self, request):
         logout(request)
@@ -393,13 +406,14 @@ class UserApi(viewsets.ModelViewSet):
             'access_token': access_token,
             'user': UserSerializer(user).data
         }
+        return response
 
     # Get new tokens from refresh tokens
     @action(detail=False, methods=['get'])
     def new_token(self, request):
 
         refreshtoken = request.COOKIES.get('refreshtoken')
-
+        response = Response()
         if refreshtoken is None:
             return Response(data={"message": "Authentication credentials not provided"}, status=400)
     
@@ -422,3 +436,4 @@ class UserApi(viewsets.ModelViewSet):
             'access_token': access_token,
             'user': UserSerializer(user).data
         }
+        return response

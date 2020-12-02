@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 3rd Party
     'rest_framework',
+    'corsheaders',
     # User
     'Accounts',
     # Frontend
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,13 +133,13 @@ AUTH_USER_MODEL="Accounts.User"
 
 # Rest Framework
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'Accounts.api.AuthenticationApi.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
     ),
 }
 
@@ -156,3 +158,10 @@ JWT_RE_AUTH_SECRET_KEY = "781tydjak834olnao9741ihjmp9asd"
 
 # Other Settings
 FRONTEND_URL = "http://127.0.0.1:8000"
+
+# CORS Settings
+CORS_ORIGIN_WHITELIST = (
+    FRONTEND_URL,
+)
+
+CORS_ALLOW_CREDENTIALS = True
