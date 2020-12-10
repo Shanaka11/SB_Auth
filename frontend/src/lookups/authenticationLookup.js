@@ -23,3 +23,30 @@ export const apiGetUsers = (callback) => {
     //method, endpoint, callback, data, media
     backendLookup('GET', endpoint, callback);    
 }
+
+export const ApiRegisterUser = (callback, data) => {
+    const endpoint = '/users/';
+    //method, endpoint, callback, data, media
+    backendLookup('POST', endpoint, callback, data);
+}
+
+// Request Password Reset Link
+export const ApiResetPasswordReq = (callback, data) => {
+    const endpoint = '/users/password_req/';
+    //method, endpoint, callback, data, media
+    backendLookup('POST', endpoint, callback, data);
+}
+
+// Reset Password
+export const ApiResetPassword = (user, token, callback, data) => {
+    const endpoint = '/users/change_password_mail/' + user + '/' + token + '/';
+    //method, endpoint, callback, data, media
+    backendLookup('POST', endpoint, callback, data);
+}
+
+// Send Activation Link
+export const ApiSendActivationLink = (callback, data) => {
+    const endpoint = '/users/send_activate_link/';
+    //method, endpoint, callback, data, media
+    backendLookup('POST', endpoint, callback, data);
+}

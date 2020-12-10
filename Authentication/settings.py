@@ -134,6 +134,7 @@ AUTH_USER_MODEL="Accounts.User"
 # Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
+        'Accounts.permissions.IsVerifiedUser',
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (

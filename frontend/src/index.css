@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+/* Base Styles */
 :root{
   --green: #44aa00;
   --blue: #000055;
@@ -23,4 +24,60 @@ body{
   background: #ffffff;
   color: var(--blue);
   position: relative;
+}
+
+/* Utilities Styles */
+/* Display */
+.d-flex {
+  display: flex;
+}
+/* Align */
+.align-center{
+  align-items: center;
+}
+/* Justify */
+.justify-center{
+  justify-content: center;
+}
+/*Margin*/
+.ml-auto{
+  margin-left: auto;
+}
+
+.page-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+.text-small{
+  font-size: smaller;
+} 
+
+.pointer{
+  cursor: pointer;
+} 
+
+.link{
+  cursor: pointer;
+}
+
+.link:hover{
+  color: var(--green);
+}
+
+/* Input */
+.input-group{
+  position: relative;
+  margin: 1rem 0;
+}
+
+/* Button */
+.btn{
+  padding: 10px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }

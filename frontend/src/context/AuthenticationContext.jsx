@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from "react"
 import AuthenticationReducer from "./AuthenticationReducer"
-import {apiLogin, apiLogout, ApiLoggedUser, logged} from "../lookups"
+import {apiLogin, apiLogout, ApiLoggedUser, logged, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword} from "../lookups"
 
 // Initial State
 const initialState = {
@@ -20,7 +20,14 @@ export const AuthenticationProvider = ({children}) => {
 
     // Actions
     const register = (callback, data) => {
-        ApiRegisterUser(callback, data)
+        const handleFrontend = (response, status) => {
+            if(status == 201){
+                callback()
+            }else{
+                alert(JSON.stringify(response))
+            }
+        }
+        ApiRegisterUser(handleFrontend, data)
     }
 
     const registerAdmin = (callback, data) =>{
@@ -75,6 +82,54 @@ export const AuthenticationProvider = ({children}) => {
 
     }
 
+    const resetPasswordReq = (callback, data) => {
+
+        const handleFrontend = (response, status) => {
+            if(status === 200){
+                callback()
+            }else{
+                alert(JSON.stringify(response))                
+            }
+        }
+        
+        ApiResetPasswordReq(handleFrontend, data)
+    }
+
+    const resetPassword = (user, token, callback, data) => {
+
+        const handleFrontend = (response, status) => {
+            if(status === 201){
+                callback()
+            }else{
+                alert(JSON.stringify(response))                
+            }
+        }
+
+        ApiResetPassword(user, token, handleFrontend, data)
+    }
+
+    // Request Activation Link
+    const activateUserReq = (user, callback) => {
+        const handleFrontend = (response, status) => {
+            if(status === 200){
+                callback()
+            }else{
+                alert(JSON.stringify(response))                
+            }
+        }
+    }
+    
+    // Activate User
+    const activateUser = (token, callback) => {
+        const handleFrontend = (response, status) => {
+            if(status === 200){
+                callback()
+            }else{
+                alert(JSON.stringify(response))                
+            }
+        }
+    }
+
     const updateUser = (data) => {
 
         const handleFrontend = (response, state) => {
@@ -91,12 +146,12 @@ export const AuthenticationProvider = ({children}) => {
                     logged: state.logged,
                     user: state.user,
                     // role: state.role,
-                    // salesperson_id: state.salesperson_id,
-                    // email: state.email,
                     logIn,
                     logOut,
-                    currentUser
-                    // register,
+                    currentUser,
+                    register,
+                    resetPasswordReq,
+                    resetPassword,
                     // registerAdmin,
                     // updateUser
                 }

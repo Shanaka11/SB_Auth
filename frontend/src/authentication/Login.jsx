@@ -1,17 +1,18 @@
 // React Imports
 import React, {useState, useContext} from 'react'
+// Local Imports
 import {AuthenticationContext} from "../context"
 import {Input} from '../utils'
 
 // CSS Imports
 import './authentication.css';
 
-const Login = () => {
+const Login = ({changeWindowCallback}) => {
     // Context
     const {logIn} = useContext(AuthenticationContext)
 
     // States
-    const [state, setstate] = useState({
+    const [state, setState] = useState({
         username : "",
         password: ""
     })
@@ -20,7 +21,7 @@ const Login = () => {
     const handleChange = (event) => {
         const {name, value} = event.target
 
-        setstate(prevValue => {
+        setState(prevValue => {
             return{
                 ...prevValue,
                 [name]: value
@@ -41,10 +42,26 @@ const Login = () => {
 
     const handleRegister = (event) => {
         // Handle Request
+        event.preventDefault()
+        const data = {
+            target: {
+                name: "page",
+                value: 2
+            }
+        }
+        changeWindowCallback(data)
     }
 
     const handlePasswordReset = (event) => {
-        // Handle Request        
+        // Handle Request
+        event.preventDefault()
+        const data = {
+            target: {
+                name: "page",
+                value: 3
+            }
+        }
+        changeWindowCallback(data)    
     }
 
 
@@ -55,6 +72,9 @@ const Login = () => {
                 {/* Have the logo here */}
                 {/* Sign In */}
                 <form onSubmit={handleLogin}>
+                    <div className="input-group d-flex align-center">
+                        <h1>Login</h1>
+                    </div>                     
                     <div className="input-group">
                         <Input  type="text" 
                                 setFinalValue={handleChange}
@@ -73,13 +93,13 @@ const Login = () => {
                                 reset="FALSE"
                                 required/>
                     </div>
-                    <div className="input-group d-flex justify-center">
-                        <div className="text-small pointer link" onClick={ handleRegister }>Register</div>
+                    <div className="input-group d-flex align-center">
+                        <div className="text-small link" onClick={ handleRegister }>Register</div>
                         {/* Log In */}
                         <button className="btn btn-login ml-auto" type="submit">Log In</button>
                     </div> 
-                    <div className="input-group d-flex justify-center">
-                        <div className="text-small pointer link" onClick={ handlePasswordReset }>Forgot Password ?</div>
+                    <div className="input-group d-flex">
+                        <div className="text-small link" onClick={ handlePasswordReset }>Forgot Password ?</div>
                     </div>                                    
                 </form>                
             </div>                    

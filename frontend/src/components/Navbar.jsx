@@ -1,5 +1,7 @@
+// React Imports
 import React, {useContext, useEffect} from 'react'
-// Context
+// Additiona React Imports
+// Local Imports
 import {AuthenticationContext} from '../context'
 // CSS
 import './components.css'

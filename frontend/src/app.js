@@ -1,21 +1,23 @@
 import React, { useEffect, useContext } from "react";
 import { render } from "react-dom";
 import './index.css';
-import {Login} from './authentication';
+import {Authentication, NewPassword} from './authentication';
 import {Admin} from './admin'
 import {AuthenticationProvider, AuthenticationContext} from "./context"
-import {BrowserRouter as Router, Switch, Route, useHistory} from 'react-router-dom'
+import {BrowserRouter as Router, Switch, Route, useHistory, useLocation} from 'react-router-dom'
 
 function App() {
 
   const {logged, currentUser} = useContext(AuthenticationContext)
-  // const history = useHistory()
 
   const history = useHistory()
+  const location = useLocation()
 
-  useEffect(() => {        
+  useEffect(() => {
     if(!logged){
-      history.push("/")
+      if(!location.pathname.includes("/user/newPassword")){
+        history.push("/")
+      }
     }
 
     if(logged){
@@ -30,12 +32,13 @@ function App() {
         //}  
       //}
     }    
-  })
+  }, [logged])
 
   return (
       <>
         <Switch>
-          <Route path="/" exact component={Login} />
+          <Route path="/" exact component={Authentication} />
+          <Route path="/user/newPassword" component={NewPassword} />
           <Route path="/rest_admin" exact component={Admin} />
         </Switch>
       </>

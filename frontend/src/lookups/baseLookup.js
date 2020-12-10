@@ -16,7 +16,6 @@ const getCookie = (name) => {
 
 export const logged = () => {
     const temp = getCookie("mahircorrigan")
-    console.log(temp)
     return temp
 }
 

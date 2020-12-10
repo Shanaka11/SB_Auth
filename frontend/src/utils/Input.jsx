@@ -1,4 +1,7 @@
+// React Imports
 import React, {useState} from 'react'
+// CSS Imports
+import './utils.css';
 
 const Input = ({type, setFinalValue, name, placeholder, initialValue, reset, required, pattern, patternText}) => { 
 

@@ -1,6 +1,5 @@
 # Python
-import jwt
-import datetime
+import jwt, datetime
 from socket import gaierror
 # Django
 from django.contrib.auth import login, authenticate, logout
@@ -39,8 +38,16 @@ class UserApi(viewsets.ModelViewSet):
         print(self.action)
         if self.action == 'login':
             return [AllowAny()]
+        if self.action == 'logout':
+            return [AllowAny()]            
+        if self.action == 'create':
+            return [AllowAny()]
+        if self.action == 'password_req':
+            return [AllowAny()]
+        if self.action == 'change_password_mail':
+            return [AllowAny()]
         else:
-            return [IsAuthenticated()]
+            return super().get_permissions()
 
     # Apart from Create (user not admin), Login, Forget Password can be accessed without authentication
     # All else needs to be authenticated
@@ -57,7 +64,7 @@ class UserApi(viewsets.ModelViewSet):
     def create(self, request):
         if request.data['password'] == request.data['password2']:
             user = User.objects.create(
-                username=request.data['username'],
+                username=request.data['username'].lower(),
                 first_name=request.data['first_name'],
                 email=request.data["email"]
             )
@@ -83,7 +90,7 @@ class UserApi(viewsets.ModelViewSet):
         user = request.user
         if user.is_superuser:
             response = create(request)
-            user = User.objects.get(username= response.data['username'])
+            user = User.objects.get(username= response.data['username'].lower())
             user.is_superuser = True
             user.save()
         else:
@@ -124,7 +131,7 @@ class UserApi(viewsets.ModelViewSet):
         user = User.objects.get(id= pk)
         if user == request.user:
             # User is updating himself
-            user = authenticate(username=user.username, password=password)
+            user = authenticate(username=user.username.lower(), password=password)
             if user is not None:
                 return super().update(request, pk)
             else:
@@ -133,7 +140,7 @@ class UserApi(viewsets.ModelViewSet):
             # An Admin user is updating someone else
             user = request.user
             if user.is_superuser:
-                user = authenticate(username=user.username, password=password)
+                user = authenticate(username=user.username.lower(), password=password)
                 if user is not None:         
                     return super().update(request, pk)
                 else:
@@ -159,7 +166,7 @@ class UserApi(viewsets.ModelViewSet):
         user = User.objects.get(id= pk)
         if user == request.user:
             # User is updating himself
-            user = authenticate(username=user.username, password=password)
+            user = authenticate(username=user.username.lower(), password=password)
             if user is not None:
                 return super().partial_update(request, pk)
             else:
@@ -168,7 +175,7 @@ class UserApi(viewsets.ModelViewSet):
             # An Admin user is updating someone else
             user = request.user
             if user.is_superuser:
-                user = authenticate(username=user.username, password=password)
+                user = authenticate(username=user.username.lower(), password=password)
                 if user is not None:         
                     return super().partial_update(request, pk)
                 else:
@@ -185,7 +192,7 @@ class UserApi(viewsets.ModelViewSet):
         password = request.data['password1']
         user = request.user
         if user.is_superuser:
-            user = authenticate(username=user.username, password=password)
+            user = authenticate(username=user.username.lower(), password=password)
             if user is not None:
                 return super().destroy(request, pk)
             else:
@@ -217,7 +224,7 @@ class UserApi(viewsets.ModelViewSet):
     def login(self, request):
         serializer_class = PublicUserSerializer
 
-        username = request.data['username']
+        username = request.data['username'].lower()
         password = request.data['password']
         user = authenticate(username=username, password=password)
 
@@ -252,7 +259,7 @@ class UserApi(viewsets.ModelViewSet):
     def change_password(self, request):
         # Add the new password
         if request.data['password'] == request.data['password2']:
-            username = request.data['username']
+            username = request.data['username'].lower()
             password = request.data['password']
             user = User.objects.get(username=username)
             user.set_password(password)
@@ -266,14 +273,15 @@ class UserApi(viewsets.ModelViewSet):
     username
     email
     """
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['post'])
     def send_activate_link(self, request):
         try:
-            username = request.data['username']
-            email = request.data['email']
+            username = request.data['username'].lower()
+            user = User.objects.get(username=username)
+            email = user.email
             # Create the activation link here with the jwt token and add it to the link
             token = jwt.encode({'name': username, 'exp': datetime.datetime.now()}, settings.JWT_SECRET_KEY, algorithm='HS256').decode() 
-            link = FRONTEND_URL + "/api/user/reset_password/" + username + "/" + token
+            link = settings.FRONTEND_URL + "/api/user/activate/" + username + "/" + token
             html_content = render_to_string("activationEmail.html", {'link': link, 'username': username})
             text_content = strip_tags(html_content)
 
@@ -301,7 +309,7 @@ class UserApi(viewsets.ModelViewSet):
             return Response(data={"message": "Something went wrong please contact support"}, status=400)
 
     # Activate
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['post'])
     def activate(self, request, username=None, token=None):
         # Decode the JWT and validate it, If valid set the user to active
         # JWT Token
@@ -309,7 +317,7 @@ class UserApi(viewsets.ModelViewSet):
             row_token = bytes(token, 'utf-8')
             decoded_token = jwt.decode(row_token, key, algorithms='HS256')
             if (datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds() - decode_token["exp"] <= 300:
-                user = User.objects.get(username=username)
+                user = User.objects.get(username=username.lower())
                 user.is_active = True
                 user.save()
                 return Response(data={"message": "Account Activated"}, status=200)
@@ -324,18 +332,19 @@ class UserApi(viewsets.ModelViewSet):
     email
     """
     # ForgetPassword
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['post'])
     def password_req(self, request):
         # Send an e mail with a link to prompt a password change
         try:
             username = request.data['username']
-            email = request.data['email']
+            username = username.lower()
+            user = User.objects.get(username=username)
+            email = user.email
             # Create the activation link here with the jwt token and add it to the link
             token = jwt.encode({'name': username, 'exp': datetime.datetime.now()}, settings.JWT_SECRET_KEY, algorithm='HS256').decode() 
-            link = FRONTEND_URL + "/api/user/reset_password/" + username + "/" + token
+            link = settings.FRONTEND_URL + "/user/newPassword/" + username + "/" + token
             html_content = render_to_string("passwordResetEmail.html", {'link': link, 'username': username})
             text_content = strip_tags(html_content)
-
             email = EmailMultiAlternatives(
                 # Subject
                 "Password Reset Link",
@@ -346,7 +355,6 @@ class UserApi(viewsets.ModelViewSet):
                 # Receipients
                 [email]
             )
-
             email.attach_alternative(html_content, "text/html")
             email.send()
             return Response(data={"message": "Email Sent"}, status=200)
@@ -364,17 +372,17 @@ class UserApi(viewsets.ModelViewSet):
     password2
     """    
     # Change Password Mail
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['post'],  url_path='change_password_mail/(?P<username>.*)/(?P<token>.*)')
     def change_password_mail(self, request, username=None, token=None):
         # Decode the JWT and validate it
         # Change Password by mail
         # JWT Token
         try:
             row_token = bytes(token, 'utf-8')
-            decoded_token = jwt.decode(row_token, key, algorithms='HS256')
-            if (datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds() - decode_token["exp"] <= 300:
+            decoded_token = jwt.decode(row_token, settings.JWT_SECRET_KEY, algorithms='HS256')            
+            if (datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds() - decoded_token["exp"] <= 300:
                 if(request.data['password1'] == request.data['password2']):
-                    user = User.objects.get(username=username)
+                    user = User.objects.get(username=username.lower())
                     user.set_password(request.data['password1'])
                     user.save()
                     return Response(data={"message": "Password Changed"}, status=201)
@@ -389,7 +397,7 @@ class UserApi(viewsets.ModelViewSet):
     @ensure_csrf_cookie
     @action(detail=False, methods=['get'])
     def login_jwt(self, request):
-        username = request.data['username']
+        username = request.data['username'].lower()
         password = request.data['password']
         response = Response()
         if username is None or password is None:

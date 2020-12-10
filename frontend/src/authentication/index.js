@@ -1,5 +1,7 @@
-import Login from "./Login"
+import Authentication from "./Authentication"
+import NewPassword from "./NewPassword"
 
 export {
-    Login,
+    Authentication,
+    NewPassword
 }
