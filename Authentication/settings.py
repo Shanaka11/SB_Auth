@@ -156,6 +156,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 JWT_SECRET_KEY = "Leoisthebest123"
 JWT_AUTH_SECRET_KEY = "1dgiu16oihdsl16298hkdsla86"
 JWT_RE_AUTH_SECRET_KEY = "781tydjak834olnao9741ihjmp9asd"
+JWT_USERINFO_KEY = "1237561278356lknalskdtr176253"
 
 # Other Settings
 FRONTEND_URL = "http://127.0.0.1:8000"

@@ -46,6 +46,8 @@ class UserApi(viewsets.ModelViewSet):
             return [AllowAny()]
         if self.action == 'change_password_mail':
             return [AllowAny()]
+        if self.action == 'send_activate_link' or self.action == 'activate' or self.action == 'get_current_user':
+            return [IsAuthenticated()]
         else:
             return super().get_permissions()
 
@@ -233,6 +235,8 @@ class UserApi(viewsets.ModelViewSet):
             # Attach a normal cookie notifing a user is logged in
             response = Response()
             response.set_cookie(key='mahircorrigan', value='gethinmorrow', httponly=False)
+            token = jwt.encode(PublicUserSerializer(user).data, settings.JWT_USERINFO_KEY, algorithm='HS256').decode()
+            response.set_cookie(key='userinfologged', value=token, httponly=False)
             response.data = {"message": "User Logged In Successfully", "user": PublicUserSerializer(user).data}
             response.status_code = 200
             return response
@@ -245,6 +249,7 @@ class UserApi(viewsets.ModelViewSet):
         logout(request)
         response = Response()
         response.delete_cookie('mahircorrigan')
+        response.delete_cookie('userinfologged')
         response.data = {"message": "User Logged Out"}
         response.status_code = 200
         return response
@@ -269,19 +274,17 @@ class UserApi(viewsets.ModelViewSet):
             return Response(data={"message": "Passwords Do Not Match"}, status=400)
 
     # Send E-Mail Verification Link
-    """
-    username
-    email
-    """
     @action(detail=False, methods=['post'])
     def send_activate_link(self, request):
         try:
-            username = request.data['username'].lower()
-            user = User.objects.get(username=username)
+            user = request.user
+            username = user.username
+            # username = request.data['username'].lower()
+            # user = User.objects.get(username=username)
             email = user.email
             # Create the activation link here with the jwt token and add it to the link
-            token = jwt.encode({'name': username, 'exp': datetime.datetime.now()}, settings.JWT_SECRET_KEY, algorithm='HS256').decode() 
-            link = settings.FRONTEND_URL + "/api/user/activate/" + username + "/" + token
+            token = jwt.encode({'name': username, 'exp': datetime.datetime.now()}, settings.JWT_SECRET_KEY, algorithm='HS256').decode()
+            link = settings.FRONTEND_URL + "/user/activation/activate/" + token 
             html_content = render_to_string("activationEmail.html", {'link': link, 'username': username})
             text_content = strip_tags(html_content)
 
@@ -309,18 +312,23 @@ class UserApi(viewsets.ModelViewSet):
             return Response(data={"message": "Something went wrong please contact support"}, status=400)
 
     # Activate
-    @action(detail=False, methods=['post'])
-    def activate(self, request, username=None, token=None):
+    @action(detail=False, methods=['get', 'post'], url_path='activate/(?P<token>.*)')
+    def activate(self, request, token=None):
         # Decode the JWT and validate it, If valid set the user to active
         # JWT Token
         try:
             row_token = bytes(token, 'utf-8')
-            decoded_token = jwt.decode(row_token, key, algorithms='HS256')
-            if (datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds() - decode_token["exp"] <= 300:
-                user = User.objects.get(username=username.lower())
-                user.is_active = True
+            decoded_token = jwt.decode(row_token, settings.JWT_SECRET_KEY, algorithms='HS256')
+            if (datetime.datetime.now() - datetime.datetime.utcfromtimestamp(0)).total_seconds() - decoded_token["exp"] <= 300:
+                user = User.objects.get(username=decoded_token['name'])
+                user.verified = True
                 user.save()
-                return Response(data={"message": "Account Activated"}, status=200)
+                response = Response()
+                response.data = {"message": "Account Verified", "user": PublicUserSerializer(user).data}
+                response.status_code = 200
+                response.delete_cookie('userinfologged')                
+                response.set_cookie(key='userinfologged', value=token, httponly=False)
+                return response
             else:
                 return Response(data={"message": "Token Expiered, Please request a new token"}, status=400)                
         except:

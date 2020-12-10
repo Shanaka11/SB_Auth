@@ -1,3 +1,5 @@
+import jwt from 'jwt-decode'
+
 // Get Cookie Function
 const getCookie = (name) => {
     var cookieValue = null
@@ -19,6 +21,16 @@ export const logged = () => {
     return temp
 }
 
+export const getLoggedUserInfo = () => {
+    const temp = getCookie("userinfologged")
+    if (temp) {
+        const user = jwt(temp)
+        console.log(user)
+        return user
+    }else{
+        return {}
+    }
+}
 export function backendLookup(method, endpoint, callback, data, media){
 
         let jsonData;

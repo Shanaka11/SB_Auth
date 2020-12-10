@@ -50,3 +50,10 @@ export const ApiSendActivationLink = (callback, data) => {
     //method, endpoint, callback, data, media
     backendLookup('POST', endpoint, callback, data);
 }
+
+// Activate Account
+export const ApiActivate = (token, callback, data) => {
+    const endpoint = '/users/activate/' + token + '/';
+    //method, endpoint, callback, data, media
+    backendLookup('POST', endpoint, callback, data);
+}

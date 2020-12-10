@@ -1,5 +1,5 @@
-import {apiLogin, apiLogout, apiGetUsers, ApiLoggedUser, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword} from './authenticationLookup'
-import {logged} from './baseLookup'
+import {apiLogin, apiLogout, apiGetUsers, ApiLoggedUser, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword, ApiSendActivationLink, ApiActivate} from './authenticationLookup'
+import {logged, getLoggedUserInfo} from './baseLookup'
 
 export{
     // Authentication Lookup
@@ -10,6 +10,9 @@ export{
     ApiRegisterUser,
     ApiResetPasswordReq,
     ApiResetPassword,
+    ApiSendActivationLink,
+    ApiActivate,
     // Base Lookup
-    logged
+    logged,
+    getLoggedUserInfo
 }

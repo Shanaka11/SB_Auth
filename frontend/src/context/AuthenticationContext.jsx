@@ -1,14 +1,12 @@
 import React, { createContext, useReducer } from "react"
 import AuthenticationReducer from "./AuthenticationReducer"
-import {apiLogin, apiLogout, ApiLoggedUser, logged, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword} from "../lookups"
+import {apiLogin, apiLogout, ApiLoggedUser, logged, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword, getLoggedUserInfo, ApiSendActivationLink, ApiActivate} from "../lookups"
 
 // Initial State
 const initialState = {
     logged: logged() ? true : false,
-    user: {},
+    user: getLoggedUserInfo(),
     role: "",
-    email: "",
-    salesperson_id: "",
 }
 
 // Create Context
@@ -109,7 +107,7 @@ export const AuthenticationProvider = ({children}) => {
     }
 
     // Request Activation Link
-    const activateUserReq = (user, callback) => {
+    const activateUserReq = (callback) => {
         const handleFrontend = (response, status) => {
             if(status === 200){
                 callback()
@@ -117,17 +115,24 @@ export const AuthenticationProvider = ({children}) => {
                 alert(JSON.stringify(response))                
             }
         }
+        ApiSendActivationLink(callback)        
     }
     
     // Activate User
     const activateUser = (token, callback) => {
         const handleFrontend = (response, status) => {
             if(status === 200){
+                dispatch({
+                    type: 'ACTIVATE',
+                    payload: response
+                })
                 callback()
             }else{
                 alert(JSON.stringify(response))                
             }
         }
+
+        ApiActivate(token, handleFrontend)
     }
 
     const updateUser = (data) => {
@@ -152,6 +157,8 @@ export const AuthenticationProvider = ({children}) => {
                     register,
                     resetPasswordReq,
                     resetPassword,
+                    activateUserReq,
+                    activateUser
                     // registerAdmin,
                     // updateUser
                 }
