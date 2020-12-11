@@ -33,7 +33,17 @@ export default (state, action) => {
                 // role: action.payload.role,
                 // salesperson_id: action.payload.salesperson,
                 // email: action.payload.email
-            }            
+            }
+        case 'MESSAGE':
+            return {
+                ...state,
+                message: action.payload
+            }
+        case 'CLEAR_MESSAGE':
+            return{
+                ...state,
+                message: undefined
+            }
         default:
             return state
     }

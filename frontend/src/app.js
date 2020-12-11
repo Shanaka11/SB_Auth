@@ -1,14 +1,14 @@
 import React, { useEffect, useContext } from "react";
 import { render } from "react-dom";
 import './index.css';
-import {Authentication, NewPassword, Activation} from './authentication';
+import {Authentication, NewPassword, Activation, Message} from './authentication';
 import {Admin} from './admin'
 import {AuthenticationProvider, AuthenticationContext} from "./context"
 import {BrowserRouter as Router, Switch, Route, useHistory, useLocation} from 'react-router-dom'
 
 function App() {
 
-  const {logged, user, currentUser} = useContext(AuthenticationContext)
+  const {logged, user, message} = useContext(AuthenticationContext)
 
   const history = useHistory()
   const location = useLocation()
@@ -33,6 +33,7 @@ function App() {
   }, [logged, user])
   return (
       <>
+        {message && <Message />}
         <Switch>
           <Route path="/" exact component={Authentication} />
           <Route path="/user/newPassword" component={NewPassword} />

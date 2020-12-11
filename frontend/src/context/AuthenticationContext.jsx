@@ -7,6 +7,7 @@ const initialState = {
     logged: logged() ? true : false,
     user: getLoggedUserInfo(),
     role: "",
+    message: ""
 }
 
 // Create Context
@@ -41,7 +42,14 @@ export const AuthenticationProvider = ({children}) => {
                     payload: response
                 })
             }else{
-                alert(JSON.stringify(response))
+                dispatch({
+                    type: 'MESSAGE',
+                    payload: {
+                                "type": "ERROR",
+                                "response": response
+                            }
+                })
+                // alert(JSON.stringify(response))
             }
         }
         apiLogin(handleFrontend, data)
@@ -144,6 +152,14 @@ export const AuthenticationProvider = ({children}) => {
         //ApiUpdateUser(handleFrontend, data)
     }
 
+    // Clear Messages
+    const clearMessage = () => {
+        dispatch({
+            type: 'CLEAR_MESSAGE',
+            payload: ""
+        })
+    }
+
     return (
         <AuthenticationContext.Provider
             value = {
@@ -151,6 +167,7 @@ export const AuthenticationProvider = ({children}) => {
                     logged: state.logged,
                     user: state.user,
                     // role: state.role,
+                    message: state.message,
                     logIn,
                     logOut,
                     currentUser,
@@ -158,7 +175,8 @@ export const AuthenticationProvider = ({children}) => {
                     resetPasswordReq,
                     resetPassword,
                     activateUserReq,
-                    activateUser
+                    activateUser,
+                    clearMessage
                     // registerAdmin,
                     // updateUser
                 }

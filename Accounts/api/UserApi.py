@@ -64,18 +64,49 @@ class UserApi(viewsets.ModelViewSet):
     last_name
     """
     def create(self, request):
-        if request.data['password'] == request.data['password2']:
-            user = User.objects.create(
-                username=request.data['username'].lower(),
-                first_name=request.data['first_name'],
-                email=request.data["email"]
-            )
-            user.set_password(request.data["password"])
-            user.save()
-            # Here Create Any connected modals to user like Profile, Role Etc
-            return Response(data=PublicUserSerializer(user).data, status=201)
-        else:
-            return Response(data={"message": "Passwords do not match"}, status=400)
+        try:
+            if request.data['password'] == request.data['password2']:
+                user = User.objects.create(
+                    username=request.data['username'].lower(),
+                    first_name=request.data['first_name'],
+                    email=request.data["email"]
+                )
+                user.set_password(request.data["password"])
+                user.save()
+                # Here Create Any connected modals to user like Profile, Role Etc
+                # Send Verification Mail
+                username = user.username
+                email = user.email
+                # Create the activation link here with the jwt token and add it to the link
+                token = jwt.encode({'name': username, 'exp': datetime.datetime.now()}, settings.JWT_SECRET_KEY, algorithm='HS256').decode()
+                link = settings.FRONTEND_URL + "/user/activation/activate/" + token 
+                html_content = render_to_string("activationEmail.html", {'link': link, 'username': username})
+                text_content = strip_tags(html_content)
+
+                email = EmailMultiAlternatives(
+                    # Subject
+                    "Account Activation Link",
+                    # Content
+                    text_content,
+                    # From
+                    settings.EMAIL_HOST_USER,
+                    # Receipients
+                    [email]
+                )
+
+                email.attach_alternative(html_content, "text/html")
+                email.send()                
+                return Response(data=PublicUserSerializer(user).data, status=201)
+            else:
+                return Response(data={"message": "Passwords do not match"}, status=400)
+        except gaierror as e:
+            # Socker Errors
+            if e.errno == 11001:
+                # Connection Error
+                return Response(data={"message": "Email was not Sent, Please check your internet connection or contact our support"}, status=400)                
+        except:
+             # Something else
+            return Response(data={"message": "Something went wrong please contact support"}, status=400)
 
     # Create Admin
     # Only Admins can create admins
