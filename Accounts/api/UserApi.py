@@ -1,5 +1,5 @@
 # Python
-import jwt, datetime
+import jwt, datetime, sys
 from socket import gaierror
 # Django
 from django.contrib.auth import login, authenticate, logout
@@ -7,6 +7,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from django.db import IntegrityError
 from django.views.decorators.csrf import ensure_csrf_cookie
 # Rest Framework
 from rest_framework import status, viewsets
@@ -103,10 +104,7 @@ class UserApi(viewsets.ModelViewSet):
             # Socker Errors
             if e.errno == 11001:
                 # Connection Error
-                return Response(data={"message": "Email was not Sent, Please check your internet connection or contact our support"}, status=400)                
-        except:
-             # Something else
-            return Response(data={"message": "Something went wrong please contact support"}, status=400)
+                return Response(data={"message": "Email was not Sent, Please check your internet connection or contact our support"}, status=400)
 
     # Create Admin
     # Only Admins can create admins
