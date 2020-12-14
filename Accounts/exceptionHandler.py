@@ -24,17 +24,23 @@ def exception_handler(exc, context):
             headers['Retry-After'] = '%d' % exc.wait
 
         if isinstance(exc.detail, list):
-            data['message']['non_field_errors'] = exc.detail
-        elif isinstance(exc.detail, dict):
             data['message'] = exc.detail
+        elif isinstance(exc.detail, dict):
+            # Have to serialize this dic in a way that we get a list like key-value
+            temp_list = []
+            i = 0
+            for key, value in exc.detail.iteritems():
+                temp_list[i] = key + " " + value
+                i = i + 1
+            data['message'] = temp_list
         else:
-            data['message']['non_field_errors'] = [exc.detail]
+            data['message'] = [exc.detail]
 
         set_rollback()
         return Response(data, status=exc.status_code, headers=headers)
     else:
         data = {'status_code': 500, 'message': {}}
-        data['message']['non_field_errors'] = [f'{exc.__class__.__name__}: {exc}']
+        data['message'] = [f'{exc.__class__.__name__}: {exc}']
         return Response(data, status=500)
 
     return None

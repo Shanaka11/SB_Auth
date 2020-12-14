@@ -9,31 +9,12 @@ const Message = () => {
     // Context
     const {message, clearMessage} = useContext(AuthenticationContext)
     // States
-    const [state, setState] = useState({
-        show: true
-    })
-    // Handle State Change
-    const handleChange = (event) => {
-        const {name, value} = event.target
-        setState(prevValue => {
-            return{
-                ...prevValue,
-                [name]: value
-            }
-        })
-    }    
+    // Handle State Change 
     // Submit handler
     // OnClick Handlers
     const closeErrorBox = (event) => {
         event.preventDefault()
-        const temp_event = {
-            target: {
-                "name": "show",
-                "value": false
-            }
-        }
-        clearMessage()        
-        // handleChange(temp_event)
+        clearMessage()
     }
     return (
         <>

@@ -263,9 +263,9 @@ class UserApi(viewsets.ModelViewSet):
             login(request, user)
             # Attach a normal cookie notifing a user is logged in
             response = Response()
-            response.set_cookie(key='mahircorrigan', value='gethinmorrow', httponly=False)
+            response.set_cookie(key='mahircorrigan', value='gethinmorrow', httponly=False, max_age=settings.JWT_COOKIE_MAX_AGE)
             token = jwt.encode(PublicUserSerializer(user).data, settings.JWT_USERINFO_KEY, algorithm='HS256').decode()
-            response.set_cookie(key='userinfologged', value=token, httponly=False)
+            response.set_cookie(key='userinfologged', value=token, httponly=False, max_age=settings.JWT_COOKIE_MAX_AGE)
             response.data = {"message": "User Logged In Successfully", "user": PublicUserSerializer(user).data}
             response.status_code = 200
             return response
@@ -356,7 +356,7 @@ class UserApi(viewsets.ModelViewSet):
                 response.data = {"message": "Account Verified", "user": PublicUserSerializer(user).data}
                 response.status_code = 200
                 response.delete_cookie('userinfologged')                
-                response.set_cookie(key='userinfologged', value=token, httponly=False)
+                response.set_cookie(key='userinfologged', value=token, httponly=False, max_age=settings.JWT_COOKIE_MAX_AGE)
                 return response
             else:
                 return Response(data={"message": "Token Expiered, Please request a new token"}, status=400)                

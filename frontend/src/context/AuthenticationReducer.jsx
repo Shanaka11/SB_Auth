@@ -34,7 +34,7 @@ export default (state, action) => {
                 // salesperson_id: action.payload.salesperson,
                 // email: action.payload.email
             }
-        case 'MESSAGE':
+        case 'MESSAGE':            
             return {
                 ...state,
                 message: action.payload

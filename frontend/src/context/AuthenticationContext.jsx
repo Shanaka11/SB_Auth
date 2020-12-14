@@ -13,9 +13,28 @@ const initialState = {
 // Create Context
 export const AuthenticationContext = createContext(initialState)
 
+
 // Provider Component
 export const AuthenticationProvider = ({children}) => {
     const [state, dispatch] = useReducer(AuthenticationReducer, initialState)
+
+    // Error Handler
+
+    const HandleError = (response) => {
+        // Might need to decode the response first
+        dispatch({
+            type: 'MESSAGE',
+            payload: {
+                        "type": "ERROR",
+                        "response": response
+                    }
+        })
+
+        setTimeout(() =>{dispatch({
+            type: 'MESSAGE',
+            payload: ""
+        })}, 10000);
+    }
 
     // Actions
     const register = (callback, data) => {
@@ -23,7 +42,8 @@ export const AuthenticationProvider = ({children}) => {
             if(status == 201){
                 callback()
             }else{
-                alert(JSON.stringify(response))
+                HandleError(response)
+                // alert(JSON.stringify(response))
             }
         }
         ApiRegisterUser(handleFrontend, data)
@@ -42,13 +62,7 @@ export const AuthenticationProvider = ({children}) => {
                     payload: response
                 })
             }else{
-                dispatch({
-                    type: 'MESSAGE',
-                    payload: {
-                                "type": "ERROR",
-                                "response": response
-                            }
-                })
+                HandleError(response)
                 // alert(JSON.stringify(response))
             }
         }
@@ -157,7 +171,7 @@ export const AuthenticationProvider = ({children}) => {
         dispatch({
             type: 'CLEAR_MESSAGE',
             payload: ""
-        })
+        })        
     }
 
     return (
