@@ -1,3 +1,4 @@
+/* NAV */
 .nav{
     height: 60px;
     display: flex;
@@ -11,3 +12,38 @@
     padding: 5px;
     cursor: pointer;
 }
+
+.nav-user:hover{
+    color: black;
+}
+
+.nav-user::after{
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: 2px;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
+  }
+
+  .nav-dropdown-container{
+    position: absolute;
+    top: 60px;
+    right: 0px;
+    background-color: rgb(218, 218, 218);
+
+  }
+  .nav-dropdown-item{
+    position: relative;
+    padding: 10px;
+    text-align: right;
+    cursor: pointer;
+    min-width: 150px;
+    padding-right: 10px;
+  }
+
+  .nav-dropdown-item:hover{
+    background-color: rgb(228, 228, 228);
+  }

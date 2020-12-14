@@ -36,7 +36,6 @@ class UserApi(viewsets.ModelViewSet):
         return UserSerializer
     
     def get_permissions(self):
-        print(self.action)
         if self.action == 'login':
             return [AllowAny()]
         if self.action == 'logout':
