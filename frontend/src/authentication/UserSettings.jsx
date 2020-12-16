@@ -60,7 +60,6 @@ const UserSettings = () => {
         updateUserPassword(data)
     }
 
-    // console.log(user)
     // OnClick Handlers
     const card = [
                     {

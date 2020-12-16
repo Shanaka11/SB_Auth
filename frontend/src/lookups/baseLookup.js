@@ -25,7 +25,6 @@ export const getLoggedUserInfo = () => {
     const temp = getCookie("userinfologged")
     if (temp) {
         const user = jwt(temp)
-        console.log(user)
         return user
     }else{
         return {}
@@ -75,47 +74,3 @@ export function backendLookup(method, endpoint, callback, data, media){
         }
           
 }
-
-// // Change the method name to something like restrictedBackend
-// export function restrictedBackend(method, endpoint, callback, data, media){
-//     // use the global variable 'token' instead of currToken
-//     let getNewAccessToken = true
-//     let token = localStorage.getItem("token") ? localStorage.getItem("token") : null
-
-//     if(token){
-//         const decodedToken = jwt_decode(token)
-//         // Check if the token is expired if so get a new one
-//         if(decodedToken.exp > Date.now()/1000){
-//             getNewAccessToken = false
-//         }
-//     }
-//     // Check if the logged is true in the client storage before getting the new token
-//     if(getNewAccessToken && localStorage.getItem("token")){
-//         const xhr = new XMLHttpRequest()
-//         const url = `http://localhost:8000/api/user/refresh`
-//         xhr.responseType = "json"        
-
-//         // Check the token to see if its expiered if expiered fetch a new one via the refresh token
-//         // Send the refresh token with this request and get a new access token
-//         xhr.open('POST', url)
-//         xhr.setRequestHeader("Content-Type", "application/json")   
-//         xhr.withCredentials = true     
-//         xhr.onload = function (){
-//             // console.log(xhr.response.access)
-//             if(xhr.response){
-//                 localStorage.setItem("token", xhr.response.access)
-//                 backendLookup(method, endpoint, callback, data)
-//             }else{
-//                 localStorage.removeItem("token")
-//             }
-//         }   
-
-//         xhr.onerror = function(e) {
-//             console.log(e)
-//         }
-//         xhr.send()
-//     }else{
-//         backendLookup(method, endpoint, callback, data, media)
-//     }
-
-// }

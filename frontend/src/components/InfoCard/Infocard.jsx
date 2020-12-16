@@ -10,27 +10,8 @@ import './infocard.css';
 const Infocard = ({card, list, form}) => {
     // Context
     // States
-    const [state, setState] = useState({
-        username : "",
-        password: "",
-        selected_id: 0
-    })
-    
     // Handle State Change
-    const handleChange = (event) => {
-        const {name, value} = event.target
-
-        setState(prevValue => {
-            return{
-                ...prevValue,
-                [name]: value
-            }
-        })
-    }
     // Submit handler
-    const handleSubmit = (event) => {
-        console.log("submit")
-    }
     // OnClick Handlers
     const selectItemHandler = (event) => {
         setState(prevValue => {
