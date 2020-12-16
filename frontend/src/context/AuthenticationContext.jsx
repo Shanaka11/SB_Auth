@@ -21,12 +21,12 @@ export const AuthenticationProvider = ({children}) => {
     // Error Handler
 
     const HandleError = (response) => {
-        // Might need to decode the response first
+        // Might need to decode the response first        
         dispatch({
             type: 'MESSAGE',
             payload: {
                         "type": "ERROR",
-                        "response": response
+                        "response": response === null ? {"message" : "Server Error Occured"} : response
                     }
         })
 
