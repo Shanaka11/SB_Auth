@@ -25,6 +25,7 @@ class UserApi(viewsets.ModelViewSet):
     
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    
     # Serializer Selector
     def get_serializer_class(self):
         if self.action == 'list':
@@ -153,30 +154,29 @@ class UserApi(viewsets.ModelViewSet):
     first_name
     last_name
     """    
-    def update(self, request, pk):
-        # When updating user details a user should provide the password as well/ unless its admin
-        # Only admins can edit other users data, Others can only edit their own
-        password = request.data['password1']        
-        # If the user is admin then check for the admin password
-        user = User.objects.get(id= pk)
-        if user == request.user:
-            # User is updating himself
-            user = authenticate(username=user.username.lower(), password=password)
-            if user is not None:
-                return super().update(request, pk)
-            else:
-                return Response(data={"message": "Invalid Credentials"}, status=401)
-        else:
-            # An Admin user is updating someone else
-            user = request.user
-            if user.is_superuser:
-                user = authenticate(username=user.username.lower(), password=password)
-                if user is not None:         
-                    return super().update(request, pk)
-                else:
-                    return Response(data={"message": "Invalid Credentials"}, status=401)
-            else:
-                return Response(data={"message": "Does not have permission"}, status=401)
+    # def update(self, request, pk, partial=False):
+    #     # When updating user details a user should provide the password as well/ unless its admin
+    #     # Only admins can edit other users data, Others can only edit their own  
+    #     # If the user is admin then check for the admin password
+    #     user = User.objects.get(id= pk)
+    #     if user == request.user:
+    #         # User is updating himself
+    #         if user is not None:
+    #             response = super().update(request, pk, partial) 
+    #             print(response)
+    #             return super().update(request, pk, partial)
+    #         else:
+    #             return Response(data={"message": "Invalid Credentials"}, status=401)
+    #     else:
+    #         # An Admin user is updating someone else
+    #         user = request.user
+    #         if user.is_superuser:
+    #             if user is not None:         
+    #                 return super().update(request, pk, partial)
+    #             else:
+    #                 return Response(data={"message": "Invalid Credentials"}, status=401)
+    #         else:
+    #             return Response(data={"message": "Does not have permission"}, status=401)
 
     # Modify user details
     # Modify password
@@ -191,23 +191,23 @@ class UserApi(viewsets.ModelViewSet):
     def partial_update(self, request, pk):
         # When updating user details a user should provide the password as well/ unless its admin
         # Only admins can edit other users data, Others can only edit their own
-        password = request.data['password1']        
-        # If the user is admin then check for the admin password
         user = User.objects.get(id= pk)
         if user == request.user:
             # User is updating himself
-            user = authenticate(username=user.username.lower(), password=password)
             if user is not None:
-                return super().partial_update(request, pk)
+                response = super().partial_update(request, pk)
+                user = User.objects.get(id= pk)
+                return Response(data=PublicUserSerializer(user).data, status=200)
             else:
                 return Response(data={"message": "Invalid Credentials"}, status=401)
         else:
             # An Admin user is updating someone else
             user = request.user
             if user.is_superuser:
-                user = authenticate(username=user.username.lower(), password=password)
                 if user is not None:         
-                    return super().partial_update(request, pk)
+                    response = super().partial_update(request, pk)
+                    user = User.objects.get(id= pk)
+                    return Response(data=PublicUserSerializer(user).data, status=200)
                 else:
                     return Response(data={"message": "Invalid Credentials"}, status=401)
             else:
@@ -218,11 +218,9 @@ class UserApi(viewsets.ModelViewSet):
     password1
     """     
     def destroy(self, request, pk):
-        # Only Admins can delete users/ They need to provide password before doing so
-        password = request.data['password1']
+        # Only Admins can delete users/ They need to provide password before doing so        
         user = request.user
         if user.is_superuser:
-            user = authenticate(username=user.username.lower(), password=password)
             if user is not None:
                 return super().destroy(request, pk)
             else:
@@ -285,15 +283,15 @@ class UserApi(viewsets.ModelViewSet):
     # Change Password
     """
     username
-    password
+    password1
     password2
     """  
     @action(detail=False, methods=['post'])
     def change_password(self, request):
         # Add the new password
-        if request.data['password'] == request.data['password2']:
+        if request.data['password1'] == request.data['password2']:
             username = request.data['username'].lower()
-            password = request.data['password']
+            password = request.data['password1']
             user = User.objects.get(username=username)
             user.set_password(password)
             user.save()
@@ -307,8 +305,6 @@ class UserApi(viewsets.ModelViewSet):
         try:
             user = request.user
             username = user.username
-            # username = request.data['username'].lower()
-            # user = User.objects.get(username=username)
             email = user.email
             # Create the activation link here with the jwt token and add it to the link
             token = jwt.encode({'name': username, 'exp': datetime.datetime.now()}, settings.JWT_SECRET_KEY, algorithm='HS256').decode()

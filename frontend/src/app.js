@@ -1,7 +1,9 @@
 import React, { useEffect, useContext } from "react";
 import { render } from "react-dom";
 import './index.css';
-import {Authentication, NewPassword, Activation, Message} from './authentication';
+import './styles/grid.css';
+import {Authentication, NewPassword, Activation, Message, UserSettings} from './authentication';
+import {Navbar} from './components'
 import {Admin} from './admin'
 import {AuthenticationProvider, AuthenticationContext} from "./context"
 import {BrowserRouter as Router, Switch, Route, useHistory, useLocation} from 'react-router-dom'
@@ -27,18 +29,22 @@ function App() {
       if(user["verified"] === false){
         history.push("/user/activation")
       }else{
-        history.push("/rest_admin")
+        if(!location.pathname.includes("/user/settings")){
+          history.push("/rest_admin")
+        }        
       }      
     }    
   }, [logged, user])
   return (
       <>
         {message && <Message />}
+        {logged && <Navbar />}
         <Switch>
           <Route path="/" exact component={Authentication} />
           <Route path="/user/newPassword" component={NewPassword} />
           <Route path="/user/activation" component={Activation} />
           <Route path="/rest_admin" exact component={Admin} />
+          <Route path="/user/settings" exact component={UserSettings} />
         </Switch>
       </>
   );

@@ -1,7 +1,6 @@
 // React
 import React, { useEffect, useState } from 'react'
 // Components
-import {Navbar} from '../components'
 // Lookups
 import {} from '../lookups'
 // Contexts
@@ -25,10 +24,9 @@ const Admin = () => {
     // }
 
     return (
-        <>
-        <Navbar />
-        <h1>Admin</h1>
-        </>
+        <div className="container">        
+            <h1>Admin</h1>
+        </div>
     )
 }
 

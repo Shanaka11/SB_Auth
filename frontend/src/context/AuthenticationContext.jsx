@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from "react"
 import AuthenticationReducer from "./AuthenticationReducer"
-import {apiLogin, apiLogout, ApiLoggedUser, logged, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword, getLoggedUserInfo, ApiSendActivationLink, ApiActivate} from "../lookups"
+import {apiLogin, apiLogout, ApiLoggedUser, logged, ApiRegisterUser, ApiResetPasswordReq, ApiResetPassword, getLoggedUserInfo, ApiSendActivationLink, ApiActivate, ApiUpdateUser, ApiUpdatePassword} from "../lookups"
 
 // Initial State
 const initialState = {
@@ -76,7 +76,8 @@ export const AuthenticationProvider = ({children}) => {
                     type: 'LOGOUT'
                 })
             }else{
-                alert(JSON.stringify(response))
+                HandleError(response)
+                // alert(JSON.stringify(response))
             }
         }        
         apiLogout(handleFrontend)
@@ -93,8 +94,9 @@ export const AuthenticationProvider = ({children}) => {
                     })
                 }
             }else{
-                alert(JSON.stringify(response))
+                // alert(JSON.stringify(response))                
                 logOut()
+                HandleError(response)
             }
         }
 
@@ -108,7 +110,8 @@ export const AuthenticationProvider = ({children}) => {
             if(status === 200){
                 callback()
             }else{
-                alert(JSON.stringify(response))                
+                HandleError(response)
+                // alert(JSON.stringify(response))                
             }
         }
         
@@ -121,7 +124,8 @@ export const AuthenticationProvider = ({children}) => {
             if(status === 201){
                 callback()
             }else{
-                alert(JSON.stringify(response))                
+                HandleError(response)
+                // alert(JSON.stringify(response))                
             }
         }
 
@@ -134,7 +138,8 @@ export const AuthenticationProvider = ({children}) => {
             if(status === 200){
                 callback()
             }else{
-                alert(JSON.stringify(response))                
+                HandleError(response)
+                // alert(JSON.stringify(response))                
             }
         }
         ApiSendActivationLink(callback)        
@@ -150,20 +155,43 @@ export const AuthenticationProvider = ({children}) => {
                 })
                 callback()
             }else{
-                alert(JSON.stringify(response))                
+                HandleError(response)
+                // alert(JSON.stringify(response))                
             }
         }
 
         ApiActivate(token, handleFrontend)
     }
 
-    const updateUser = (data) => {
+    const updateUser = (id, data) => {
 
         const handleFrontend = (response, state) => {
-            
+            if(state === 200){
+                dispatch({
+                    type: 'UPDATE',
+                    payload: response
+                })
+            }else{
+                HandleError(response)
+            }
+        }
+        ApiUpdateUser(id, handleFrontend, data)
+    }
+
+    const updateUserPassword = (data) => {
+        
+        const handleFontend = (response, status) => {
+            if(status === 201){
+                dispatch({
+                    type: 'UPDATE',
+                    payload: response
+                })
+            }else{
+                HandleError(response)
+            }
         }
 
-        //ApiUpdateUser(handleFrontend, data)
+        ApiUpdatePassword(handleFontend, data)        
     }
 
     // Clear Messages
@@ -190,9 +218,10 @@ export const AuthenticationProvider = ({children}) => {
                     resetPassword,
                     activateUserReq,
                     activateUser,
-                    clearMessage
+                    clearMessage,
+                    updateUserPassword,
                     // registerAdmin,
-                    // updateUser
+                    updateUser
                 }
             }
         >

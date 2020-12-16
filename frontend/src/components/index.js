@@ -1,5 +1,7 @@
-import Navbar from './Navbar'
+import Navbar from './Navbar/Navbar'
+import InfoCard from './InfoCard/Infocard'
 
 export {
-    Navbar
+    Navbar,
+    InfoCard
 }

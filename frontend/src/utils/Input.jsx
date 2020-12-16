@@ -1,9 +1,9 @@
 // React Imports
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 // CSS Imports
 import './utils.css';
 
-const Input = ({type, setFinalValue, name, placeholder, initialValue, reset, required, pattern, patternText}) => { 
+const Input = ({type, setFinalValue, name, placeholder, initialValue, reset, required, pattern, patternText, item}) => { 
 
     const [value, setValue] = useState(reset === "TRUE" ? "" : (initialValue ? initialValue : ""))
 
@@ -21,6 +21,10 @@ const Input = ({type, setFinalValue, name, placeholder, initialValue, reset, req
         }
     }
 
+    useEffect(() => {
+        setValue(initialValue)
+    }, [initialValue])
+    
     return (
         <div>
             {pattern ? 

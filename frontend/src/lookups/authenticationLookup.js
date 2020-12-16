@@ -57,3 +57,17 @@ export const ApiActivate = (token, callback, data) => {
     //method, endpoint, callback, data, media
     backendLookup('POST', endpoint, callback, data);
 }
+
+// Update User
+export const ApiUpdateUser = (id, callback, data) => {
+    const endpoint = '/users/' + id + "/";
+    //method, endpoint, callback, data, media
+    backendLookup('PATCH', endpoint, callback, data);
+}
+
+export const ApiUpdatePassword = (callback, data) => {
+    const endpoint = '/users/change_password/';
+    //method, endpoint, callback, data, media
+    backendLookup('POST', endpoint, callback, data);
+}
+// Delete User
