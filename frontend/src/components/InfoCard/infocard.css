@@ -30,4 +30,30 @@
 
 .info-card-container-detail{
     padding: 0px 20px;
+    min-height: 50vh;
+}
+
+.info-card-list-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.info-card-list-heading{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.info-card-list-item{
+    min-width: 25%;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.info-card-list-item:hover{
+    background-color: rgb(207, 207, 207);
+}
+
+.info-card-list-footer{
+    margin: 0 10px;
 }

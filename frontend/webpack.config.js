@@ -3,9 +3,9 @@ module.exports = {
       extensions: ['.js', '.jsx']
     },    
     module: {    
-      rules: [
+      rules: [      
         {
-          test: /\.js$|jsx|/,
+          test: /(\.js?|jsx?)$/,
           exclude: /node_modules/,
           use: {
             loader: "babel-loader"

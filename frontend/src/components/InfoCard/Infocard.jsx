@@ -3,13 +3,17 @@ import React, {useState} from 'react'
 // Additiona React Imports
 import InfoCardOption from './InfocardOption'
 import InfoCardDetail from './InfocardDetail'
+import InfocardList from './infocardList'
 // Local Imports
 // CSS Imports
 import './infocard.css';
 
-const Infocard = ({card, list, form}) => {
+const Infocard = ({card, list, form, name}) => {
     // Context
     // States
+    const [state, setState] = useState({
+        selected_id: 0
+    })
     // Handle State Change
     // Submit handler
     // OnClick Handlers
@@ -31,8 +35,11 @@ const Infocard = ({card, list, form}) => {
                     )
                 })}
             </div>
-            {card && 
+            {card && form &&
                 <InfoCardDetail card_detail={card[state.selected_id].contents}/>
+            }
+            {card && list &&
+                <InfocardList />
             }
         </div>        
     )
