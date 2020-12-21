@@ -19,5 +19,6 @@ from django.urls import path, re_path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('Accounts.urls')),
+    # Direct All Non Api calls to the frontend app
     re_path(r'.*', include('frontend.urls'))
 ]

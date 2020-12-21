@@ -23,7 +23,6 @@ class JWTAuthentication(BaseAuthentication):
         if not authorization_header:
             return None
         try:
-            # header = 'Token xxxxxxxxxxxxxxxxxxxxxxxx'
             access_token = authorization_header.split(' ')[1]
             payload = jwt.decode(access_token, settings.JWT_AUTH_SECRET_KEY, algorithms=['HS256'])
         except jwt.ExpiredSignatureError:

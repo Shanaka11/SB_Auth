@@ -68,9 +68,6 @@ const Login = ({changeWindowCallback}) => {
     return (
         <div className="container page-center">
             <div className="login-card">
-                {/* Add the logo */}
-                {/* Have the logo here */}
-                {/* Sign In */}
                 <form onSubmit={handleLogin}>
                     <div className="input-group d-flex align-center">
                         <h1>Login</h1>
@@ -95,7 +92,6 @@ const Login = ({changeWindowCallback}) => {
                     </div>
                     <div className="input-group d-flex align-center">
                         <div className="text-small link" onClick={ handleRegister }>Register</div>
-                        {/* Log In */}
                         <button className="btn btn-login ml-auto" type="submit">Log In</button>
                     </div> 
                     <div className="input-group d-flex">

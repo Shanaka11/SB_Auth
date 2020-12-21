@@ -202,6 +202,15 @@ export const AuthenticationProvider = ({children}) => {
         })        
     }
 
+    // Show Error
+    const showError = (message) => {
+        dispatch({
+            type: 'ERROR',
+            payload: message
+        })
+    }
+    // Show Success message
+
     return (
         <AuthenticationContext.Provider
             value = {
@@ -221,7 +230,8 @@ export const AuthenticationProvider = ({children}) => {
                     clearMessage,
                     updateUserPassword,
                     // registerAdmin,
-                    updateUser
+                    updateUser,
+                    showError
                 }
             }
         >

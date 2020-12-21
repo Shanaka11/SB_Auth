@@ -1,4 +1,8 @@
+# Python
+# Django
+# Rest Framework
 from rest_framework import serializers
+# Local
 from ..models import User
 
 class UserSerializer(serializers.ModelSerializer):

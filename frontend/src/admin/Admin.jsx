@@ -1,31 +1,22 @@
-// React
-import React, { useEffect, useState } from 'react'
-// Components
-// Lookups
-import {} from '../lookups'
-// Contexts
+// React Imports
+import React from 'react'
+// Additiona React Imports
+// Local Imports
+import {InfoCardAdmin} from '../components'
+import {MetaProvider} from '../context'
+// CSS Imports
 
 const Admin = () => {
-
+    // Context
     // States
-    // const[state, setState] = useState({
-    //     users: []
-    // })
-
     // Handle State Change
-    // const handleChange = (name, value) => {
-
-    //     setState(prevValue => {
-    //         return{
-    //             ...prevValue,
-    //             [name]: value
-    //         }
-    //     })
-    // }
 
     return (
         <div className="container">        
-            <h1>Admin</h1>
+            <h1>Admin Console</h1>
+            <MetaProvider>
+                <InfoCardAdmin list/>
+            </MetaProvider>
         </div>
     )
 }

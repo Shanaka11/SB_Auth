@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 // CSS Imports
 import './utils.css';
 
-const Input = ({type, setFinalValue, name, placeholder, initialValue, reset, required, pattern, patternText, item}) => { 
+const Input = ({type, setFinalValue, name, placeholder, initialValue, reset, required, pattern, patternText}) => { 
 
     const [value, setValue] = useState(reset === "TRUE" ? "" : (initialValue ? initialValue : ""))
 

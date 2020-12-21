@@ -142,7 +142,7 @@ const UserSettings = () => {
     return (
         <div className="container">
             <h1>Settings</h1>
-            <InfoCard card={card}/>
+            <InfoCard card={card} form/>
         </div>
     )
 }
