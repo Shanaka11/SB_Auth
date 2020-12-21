@@ -1,9 +1,9 @@
 // React Imports
 import React, {useEffect, useState, useContext} from 'react'
 // Additiona React Imports
-import {AuthenticationContext} from "../context"
 import {useLocation} from 'react-router-dom'
 // Local Imports
+import {AuthenticationContext} from "../context"
 // CSS Imports
 
 const Activation = () => {

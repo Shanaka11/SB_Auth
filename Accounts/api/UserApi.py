@@ -18,6 +18,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from ..models import User
 from ..serializers.UserSerializer import UserSerializer, PublicUserSerializer
 from .AuthenticationApi import TokenHandler
+
 # This will have all rest api end points
 
 # When sending usernames from the front end always make the lowercase
@@ -70,6 +71,7 @@ class UserApi(viewsets.ModelViewSet):
                 user = User.objects.create(
                     username=request.data['username'].lower(),
                     first_name=request.data['first_name'],
+                    last_name=request.data['last_name'],
                     email=request.data["email"]
                 )
                 user.set_password(request.data["password"])

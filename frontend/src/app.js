@@ -1,12 +1,16 @@
+// React Imports
 import React, { useEffect, useContext } from "react";
 import { render } from "react-dom";
+// Additiona React Imports
+import {BrowserRouter as Router, Switch, Route, useHistory, useLocation} from 'react-router-dom'
+// Local Imports
+import {Admin} from './admin'
+import {Navbar} from './components'
+import {AuthenticationProvider, AuthenticationContext} from "./context"
+import {Authentication, NewPassword, Activation, Message, UserSettings} from './authentication';
+// CSS Imports
 import './index.css';
 import './styles/grid.css';
-import {Authentication, NewPassword, Activation, Message, UserSettings} from './authentication';
-import {Navbar} from './components'
-import {Admin} from './admin'
-import {AuthenticationProvider, AuthenticationContext} from "./context"
-import {BrowserRouter as Router, Switch, Route, useHistory, useLocation} from 'react-router-dom'
 
 function App() {
 

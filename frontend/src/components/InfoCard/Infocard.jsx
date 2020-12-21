@@ -38,9 +38,6 @@ const Infocard = ({card, list, form, name}) => {
             {card && form &&
                 <InfoCardDetail card_detail={card[state.selected_id].contents}/>
             }
-            {card && list &&
-                <InfocardList />
-            }
         </div>        
     )
 }

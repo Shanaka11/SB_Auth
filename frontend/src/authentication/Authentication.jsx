@@ -28,11 +28,6 @@ const Authentication = () => {
     // UseEffect
     return (
         <>
-        { /*   
-            // When Page = 1 Then Login
-            // When Page = 2 Then Register
-            // When Page = 3 Forgot Password
-        */}
         {state.page === 1 && <Login changeWindowCallback = {handleChange}/>}
         {state.page === 2 && <Register changeWindowCallback = {handleChange}/>}
         {state.page === 3 && <PasswordReset changeWindowCallback = {handleChange}/>}

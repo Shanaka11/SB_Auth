@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 // Additiona React Imports
 // Local Imports
-import InfocardListDetail from './InfocardListDetail'
 // CSS Imports
 
 const infocardList = ({data, meta}) => {
@@ -49,9 +48,6 @@ const infocardList = ({data, meta}) => {
                     )
                 })}
                 </div>
-            }
-            {state.detail && 
-                <InfocardListDetail form={form} item={state.item}/>
             }
             <div className="info-card-list-footer">
                 {/* Add the pagination here */}

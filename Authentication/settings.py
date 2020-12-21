@@ -146,15 +146,15 @@ REST_FRAMEWORK = {
 }
 
 # Email Settings
-EMAIL_HOST = 'smtp.zoho.com'
-EMAIL_HOST_USER = 'shanaka.abeysinghe.test@zohomail.com'
-EMAIL_HOST_PASSWORD = 'Leoisthebest123'
-EMAIL_PORT = 587
+EMAIL_HOST = ''
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 0
 EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = ''
 
 # JWT Settings
-JWT_SECRET_KEY = "Leoisthebest123"
+JWT_SECRET_KEY = "dummy"
 JWT_AUTH_SECRET_KEY = "1dgiu16oihdsl16298hkdsla86"
 JWT_RE_AUTH_SECRET_KEY = "781tydjak834olnao9741ihjmp9asd"
 JWT_USERINFO_KEY = "1237561278356lknalskdtr176253"
