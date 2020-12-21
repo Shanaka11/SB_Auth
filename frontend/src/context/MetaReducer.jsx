@@ -6,7 +6,12 @@ export default (state, action) => {
                 component: action.payload.component,
                 data: action.payload.data,
                 meta: action.payload.meta
-            }            
+            }
+        case 'INSERT':
+            return {
+                ...state,
+                data: [action.payload.item, ...state.data]
+            }
         case 'UPDATE':
             // Change the item with the updated one in the data array
             return {

@@ -1,5 +1,5 @@
 // React Imports
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 // Additiona React Imports
 // Local Imports
 import InfocardListDetail from './InfocardListDetail'
@@ -11,20 +11,25 @@ const InfocardList = () => {
     const { meta, data } = useContext(MetaContext)        
     // States
     const [state, setState] = useState({
-        list: true,
-        detail: false,
-        item:{}
+        item:{},
+        action:"LIST",
     })    
-    // Handle State Change
     // Submit handler
     // OnClick Handlers
     const handleOnClick = (event) => {
-        // console.log(JSON.parse(event.target.getAttribute("data-item")))
         setState(prevValue => {
             return{
                 ...prevValue,
-                list: false,
-                detail: true,
+                action: event.target.getAttribute("data-action"),
+            }
+        })        
+    }
+
+    const handleOnClickListItem = (event) => {
+        setState(prevValue => {
+            return{
+                ...prevValue,
+                action: "UPDATE",
                 item: JSON.parse(event.target.getAttribute("data-item"))
             }
         })
@@ -33,7 +38,7 @@ const InfocardList = () => {
     return (
         <div className="info-card-container-detail">
             <div className="d-flex info-card-list-heading">
-                <button>New</button>
+                <button onClick={handleOnClick} data-action="INSERT" >New</button>
                 {/* Deselect is also handled in this button */}
                 <button>Select All</button>
                 <button>Delete</button>
@@ -43,19 +48,19 @@ const InfocardList = () => {
                 <button>Back</button>
             </div>
             <hr/>
-            {state.list && 
+            {state.action === "LIST" && 
                 <div className="info-card-list-row">
                 {data.length > 0 && data.map((item, index) => {
                     return (
-                            <div key={index} className="info-card-list-item" onClick={handleOnClick} data-item={JSON.stringify(item)}>
+                            <div key={index} className="info-card-list-item" onClick={handleOnClickListItem} data-item={JSON.stringify(item)}>
                                 {item[meta.name]}                    
                             </div>
                     )
                 })}
                 </div>
             }
-            {state.detail && 
-                <InfocardListDetail item={state.item}/>
+            {state.action !== ("LIST" || "") && 
+                <InfocardListDetail item={state.item} action={state.action}/>
             }
             <div className="info-card-list-footer">
                 {/* Add the pagination here */}

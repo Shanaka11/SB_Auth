@@ -7,7 +7,7 @@ const initialState = {
     component: "",
     data: [],
     meta: {},
-    options:['user', 'test']    
+    options:['user']    
 }
 
 // Create Context
@@ -41,9 +41,23 @@ export const MetaProvider = ({children}) => {
     }
 
     // Insert
-    const addRecord = () => {
-
+    const addRecord = (callback, data) => {
+        const handleFrontend = (response, status) => {
+            if(status === 201){
+                dispatch({
+                    type: 'INSERT',
+                    payload: {
+                                item: response
+                            }
+                })
+            }else{
+                // Handle Error
+                callback(response)
+            }
+        }
+        meta.components[state.component].crudHandle('INSERT', handleFrontend, data)
     }
+
     // Update
     const updateRecord = (callback, data) => {
         const handleFrontend = (response, status) => {

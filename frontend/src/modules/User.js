@@ -1,4 +1,4 @@
-import {ApiUpdateUser, apiGetUsers} from '../lookups'
+import {apiGetUsers, ApiRegisterUser, ApiUpdateUser} from '../lookups'
 
 const crudHandle = (operation, callback, data) => {
     switch (operation){
@@ -10,7 +10,7 @@ const crudHandle = (operation, callback, data) => {
             break;
         case "INSERT":
             // Data will be the new record
-            break;
+            return ApiRegisterUser(callback, data)
         case "UPDATE":
             // Data will have id + any fields that were updated
             return ApiUpdateUser(data.id, callback, data)
@@ -37,12 +37,23 @@ export const meta =
                     "email": "",
                     "first_name": "",
                     "last_name": "",
-                    "verified": ""
+                    "verified": "",
                 },
+        "read_only_state":{
+            "password":"",
+            "password2": ""
+        },
         "form":{
             "title": "",
             // These fields will only be there when a new record is created
             "read_only_fields": [
+                {
+                    "type":"text",
+                    "name": "username",
+                    "placeholder": "Username",
+                    "reset": "FALSE",
+                    "required": true
+                },
                 {
                     "type":"password",
                     "name": "password",

@@ -1,18 +1,30 @@
 // React Imports
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 // Additiona React Imports
 // Local Imports
 import {Input} from '../../utils'
 import {AuthenticationContext, MetaContext} from '../../context'
 // CSS Imports
 
-const infocardListDetail = ({item}) => {
+const infocardListDetail = ({item, action}) => {
+    // action "UPDATE"/ "INSERT" / "DELETE"
     // Context
     const {showError} = useContext(AuthenticationContext)
-    const {meta, updateRecord} = useContext(MetaContext)
+    const {meta, addRecord, updateRecord} = useContext(MetaContext)
     // States
-    const [state, setState] = useState(item ? item : meta.state)
+    const [state, setState] = useState(item ? {...meta.state, ...meta.read_only_state, ...item} : meta.state)
+
     // Handle State Change
+    useEffect(()=>{
+        // Change State acording to the action
+        if (action === "INSERT"){
+            setState({...meta.state, ...meta.read_only_state})
+        }else if (action == "UPDATE"){
+            setState({...item})
+        }
+        
+    },[action])
+
     const handleChange = (event) => {
         const {name, value} = event.target
         setState(prevValue => {
@@ -22,11 +34,12 @@ const infocardListDetail = ({item}) => {
             }
         })
     }
+
     // Submit handler
     const submitHandler = (event) => {        
         event.preventDefault()
         const handleFrontend = (response, status) => {
-            if(status === 200){
+            if(status === 200 || 201){
                 // Handle Frontend
                 console.log(response)
             }else{
@@ -34,9 +47,13 @@ const infocardListDetail = ({item}) => {
                 showError(response)
             }
         }
-        updateRecord(handleFrontend, state)
-        // meta.crudHandler("UPDATE", handleFrontend, state)
+        if(action === "INSERT"){
+            addRecord(handleFrontend, state)
+        }else if(action === "UPDATE"){
+            updateRecord(handleFrontend, state)
+        }
     }
+
     // OnClick Handlers
     return (
         <div className="info-card-container-detail">
@@ -54,6 +71,20 @@ const infocardListDetail = ({item}) => {
                             </div> 
                     )
                 })}
+                {action === "INSERT" &&
+                    meta.form.read_only_fields.map((item, index) => {
+                        return(
+                            <div key={index} className="input-group">
+                                <Input  type = {item.type}
+                                        setFinalValue= {handleChange}
+                                        name = {item.name}
+                                        placeholder = {item.placeholder}
+                                        initialValue = {state[item.name]} 
+                                        reset = {item.reset} 
+                                        required = {item.required}/>
+                            </div>                             
+                        )
+                    })}
                 <div className="input-group d-flex align-center">
                     <button className="btn btn-login ml-auto" type="submit">Save Changes</button>
                 </div>            
